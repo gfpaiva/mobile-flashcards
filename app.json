@@ -1,5 +1,20 @@
 {
-  "expo": {
-    "sdkVersion": "25.0.0"
-  }
+	"expo": {
+		"sdkVersion": "25.0.0",
+		"orientation": "portrait",
+		"name": "Mobile FlashCards",
+		"description": "Quiz App",
+		"slug": "mobileflashcards",
+		"version": "1.0",
+		"splash": {
+			"image": "./assets/splash.png",
+			"backgroundColor": "#000000"
+		},
+		"ios": {
+			"bundleIdentifier": "org.udacifitness.exp"
+		},
+		"android": {
+			"package": "org.udacifitness.exp"
+		}
+	}
 }
