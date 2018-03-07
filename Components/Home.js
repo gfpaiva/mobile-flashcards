@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import { AppLoading } from 'expo';
 import { getStorageCards } from '../Actions';
+import DeckList from './DeckList';
+import { StyledScroll } from './Styled';
 
 class Home extends Component {
 	state = {
@@ -25,9 +27,11 @@ class Home extends Component {
 		}
 
 		return (
-			<View style={{flex: 1}}>
+			<ScrollView>
 				<Text>{JSON.stringify(this.props)}</Text>
-			</View>
+
+				<DeckList />
+			</ScrollView>
 		)
 	}
 };

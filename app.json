@@ -7,7 +7,7 @@
 		"slug": "mobileflashcards",
 		"version": "1.0",
 		"splash": {
-			"image": "./assets/splash.png",
+			"image": "./Assets/img/splash.png",
 			"backgroundColor": "#000000"
 		},
 		"ios": {
