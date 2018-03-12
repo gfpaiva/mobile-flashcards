@@ -8,7 +8,7 @@
 		"version": "1.0",
 		"splash": {
 			"image": "./Assets/img/splash.png",
-			"backgroundColor": "#000000"
+			"backgroundColor": "#7db6ff"
 		},
 		"ios": {
 			"bundleIdentifier": "org.udacifitness.exp"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styled from "styled-components";
 import { values as _values } from 'lodash';
@@ -12,7 +12,7 @@ const DeckList = ( { cards } ) => (
 		<StyledTitle>Current {pluralize(cards, 'Deck')}:</StyledTitle>
 
 		{cards.map((card, index) => (
-			<StyledTouch key={index} onPress={() => alert(0)} style={{flex: 1, flexDirection: 'row'}}>
+			<StyledTouch key={index} onPress={() => alert(0)}>
 				<StyledIcon name="cards-outline" size={32} color="#fff" />
 
 				<StyledDeckRow>
