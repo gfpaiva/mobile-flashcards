@@ -4,23 +4,30 @@ import styled from 'styled-components';
 import colors, { ColorText, StyledRow } from './Styled';
 
 const TouchButton = ({ children, ...props }) => (
-	<StyledRow>
+	<TitleContainer>
 		<Line></Line>
 		<ViewTitle {...props}>{children}</ViewTitle>
 		<Line></Line>
-	</StyledRow>
+	</TitleContainer>
 );
+
+const TitleContainer = styled.View`
+	flex-direction: row;
+	justify-content: center;
+	margin-bottom: 28
+`;
 
 const ViewTitle = ColorText.extend`
 	font-weight: bold;
-	font-size: 32;
-	margin-bottom: 32px;
+	font-size: 28;
 	text-align: center;
 `;
 
 const Line = styled.View`
 	height: 1px;
-	width: 100px;
+	flex: 1;
+	alignSelf: center;
+	margin: 0 15px;
 	background-color: ${colors.secondary}
 `;
 

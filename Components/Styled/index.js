@@ -29,8 +29,14 @@ export const ColorText = styled.Text`
 export const StyledInput = styled.TextInput`
 	color: ${colors.secondary}
 	font-size: 18;
-	padding: 9px 0;
-	border-bottom-color: ${colors.secondary}
+	padding: 18px 0;
+	width: 100%
+`;
+
+export const StyledPicker = styled.Picker`
+	background-color: #ededed;
+	color: ${colors.secondary}
+	padding: 18px 0;
 	width: 100%
 `;
 

@@ -5,13 +5,16 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styled from "styled-components";
 import { values as _values } from 'lodash';
 import { pluralize } from '../Utils/Helpers';
-import colors, { ColorText, StyledRow }  from './Styled';
+import colors, { ColorText, StyledRow } from './Styled';
+import ViewTitle from './ViewTitle';
 
 const DeckList = ( { cards } ) => (
 	<View>
-		<StyledTitle>Current {pluralize(cards, 'Deck')}:</StyledTitle>
+		<ViewTitle>Current {pluralize(cards, 'Deck')}</ViewTitle>
 
-		{cards.map((card, index) => (
+		{(!cards || cards.length <= 0) && <Text>You don´t have any deck😐</Text>}
+
+		{cards && cards.length > 0 && cards.map((card, index) => (
 			<StyledTouch key={index} onPress={() => alert(0)}>
 				<StyledIcon name="cards-outline" size={32} color="#fff" />
 
@@ -20,21 +23,13 @@ const DeckList = ( { cards } ) => (
 					{
 						(card.questions && card.questions.length > 0) ? (
 							<Text>{card.questions.length} {pluralize(card.questions, 'card')}</Text>
-						) : <Text>This deck dont have any card yet 😐</Text>
+						) : <Text>0 cards 😐</Text>
 					}
 				</StyledDeckRow>
 			</StyledTouch>
 		))}
 	</View>
 );
-
-// Text
-const StyledTitle = ColorText.extend`
-	font-size: 30;
-	text-align: center;
-	margin: 15px 0;
-	font-weight: bold
-`;
 
 const StyledTouch = styled.TouchableOpacity`
 	flex: 1;

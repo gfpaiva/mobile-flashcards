@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, Text } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 import { AppLoading } from 'expo';
 import { getStorageCards } from '../Actions';
-import DeckList from './DeckList';
 import { StyledScroll } from './Styled';
+import DeckList from './DeckList';
+import AddButton from './AddButton';
 
 class Home extends Component {
 	state = {
@@ -27,11 +28,12 @@ class Home extends Component {
 		}
 
 		return (
-			<ScrollView>
-				<Text>{JSON.stringify(this.props)}</Text>
-
-				<DeckList />
-			</ScrollView>
+			<View style={{flex: 1}}>
+				<ScrollView>
+					<DeckList />
+				</ScrollView>
+				<AddButton onPress={() => this.props.navigation.navigate('AddDeck')} />
+			</View>
 		)
 	}
 };
