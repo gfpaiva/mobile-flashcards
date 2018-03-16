@@ -25,10 +25,11 @@ export const getDeckById = ({ id }) => {
 		});
 };
 
-export const saveDeckTitle = ({ id, title }) => {
+export const saveDeckTitle = ({ title, category }) => {
 	return AsyncStorage.mergeItem(STORAGE_KEY, JSON.stringify({
-		[id]: {
+		[title]: {
 			title,
+			category,
 			questions: []
 		}
 	}));

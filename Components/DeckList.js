@@ -3,39 +3,48 @@ import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styled from "styled-components";
+import { withNavigation } from 'react-navigation';
 import { values as _values } from 'lodash';
 import { pluralize } from '../Utils/Helpers';
-import colors, { ColorText, StyledRow } from './Styled';
-import ViewTitle from './ViewTitle';
+import colors, { ColorText, ColorTextSec, StyledRow, StyledViewContainer } from './Styled';
 
-const DeckList = ( { cards } ) => (
-	<View>
-		<ViewTitle>Current {pluralize(cards, 'Deck')}</ViewTitle>
+const DeckList = ( { cards, navigation } ) => {
 
-		{(!cards || cards.length <= 0) && <Text>You don´t have any deck😐</Text>}
+	if(!cards || cards.length <= 0) {
+		return (
+			<View>
+				<NotFoundText>You don't have any deck yet 😐.</NotFoundText>
+				<NotFoundText style={{marginTop: 0}}>Tap the button to start.</NotFoundText>
+			</View>
+		);
+	}
 
-		{cards && cards.length > 0 && cards.map((card, index) => (
-			<StyledTouch key={index} onPress={() => alert(0)}>
-				<StyledIcon name="cards-outline" size={32} color="#fff" />
+	return (
+		<View>
+			<StyledViewContainer style={{marginTop: 20}}>
+				<ColorTextSec>CURRENT</ColorTextSec>
+			</StyledViewContainer>
 
-				<StyledDeckRow>
-					<CardTitle>{card.title}</CardTitle>
-					{
-						(card.questions && card.questions.length > 0) ? (
-							<Text>{card.questions.length} {pluralize(card.questions, 'card')}</Text>
-						) : <Text>0 cards 😐</Text>
-					}
-				</StyledDeckRow>
-			</StyledTouch>
-		))}
-	</View>
-);
+			{cards && cards.length > 0 && cards.map((card, index) => (
+				<StyledTouch key={index} onPress={() => navigation.navigate('Single', { title: card.title })}>
+					<StyledIcon name="cards-outline" size={32} color="#fff" />
+
+					<StyledDeckRow>
+						<CardTitle>{card.title}</CardTitle>
+						<ColorTextSec> {(card.questions && card.questions.length > 0) ? `${card.questions.length} ${pluralize(card.questions, 'card')}` : '0 cards 😐' } </ColorTextSec>
+					</StyledDeckRow>
+				</StyledTouch>
+			))}
+		</View>
+	);
+};
 
 const StyledTouch = styled.TouchableOpacity`
+	background-color: #ffffff;
 	flex: 1;
 	flex-direction: row;
 	border-bottom-width: 1px;
-	border-bottom-color: ${colors.secondary}
+	border-bottom-color: #dadada;
 	padding: 20px;
 `;
 
@@ -52,9 +61,14 @@ const StyledIcon = styled(MaterialCommunityIcons)`
 	height: 64;
 `;
 
-// Text
 const CardTitle = ColorText.extend`
 	font-size: 20
+`
+
+const NotFoundText = ColorTextSec.extend`
+	font-size: 22;
+	text-align: center;
+	margin-top: 100;
 `
 
 const mapStateToProps = cards => {
@@ -65,4 +79,4 @@ const mapStateToProps = cards => {
 	}
 };
 
-export default connect(mapStateToProps)(DeckList);
+export default withNavigation(connect(mapStateToProps)(DeckList));

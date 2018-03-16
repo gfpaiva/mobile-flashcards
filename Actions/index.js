@@ -13,8 +13,12 @@ export const getStorageCards = () => dispatch => (
 		.then(cards => dispatch(receiveCards(cards)))
 );
 
-export const saveDeck = deck => ({
-	type: SAVE_DECK,
-	deck
-});
+export const saveDeck = deck => {
+	API.saveDeckTitle(deck);
+
+	return {
+		type: SAVE_DECK,
+		deck
+	};
+};
 

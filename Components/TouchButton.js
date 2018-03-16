@@ -9,16 +9,14 @@ const TouchButton = ({ children, ...props }) => (
 );
 
 const TouchableRow = styled.TouchableOpacity`
-	background-color: ${props => props.success ? colors.success : (props.warning ? colors.warning : colors.primary ) };
-	border-radius: 15px;
+	background-color: ${props => props.success ? colors.success : (props.warning ? colors.warning : colors.primaryD ) };
 	flex-direction: row;
-	padding: 18px 0;
-	margin: 11px 0;
+	padding: 22px 0;
 `;
 
 const StyledButton = styled.Text`
 	color: #fff;
-	font-size: 22;
+	font-size: 18;
 	flex: 1
 	text-align: center
 `;
