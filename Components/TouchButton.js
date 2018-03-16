@@ -9,7 +9,7 @@ const TouchButton = ({ children, ...props }) => (
 );
 
 const TouchableRow = styled.TouchableOpacity`
-	background-color: ${props => props.success ? colors.success : (props.warning ? colors.warning : colors.primaryD ) };
+	background-color: ${props => props.type ? colors[props.type] : colors.primaryD  };
 	flex-direction: row;
 	padding: 22px 0;
 `;

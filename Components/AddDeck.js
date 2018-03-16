@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { KeyboardAvoidingView, Picker, View, Keyboard, Alert } from 'react-native';
-import styled from "styled-components";
+import styled from 'styled-components';
 import { saveDeck } from '../Actions';
-import colors, { StyledInput, StyledPicker, ColorText } from './Styled';
+import colors, { StyledInput, StyledPicker, ErrorLabel, StyledTextLabel } from './Styled';
 import TouchButton from './TouchButton';
 
 class AddDeck extends Component {
 	state = {
 		input: '',
-		category: '',
+		category: 'software',
 		inputError: false,
 	};
 
@@ -47,7 +47,9 @@ class AddDeck extends Component {
 
 		const deck = {
 			title: input,
-			category
+			category,
+			questions: [],
+			complete: false
 		};
 
 		this.props.dispatch(saveDeck(deck));
@@ -67,7 +69,7 @@ class AddDeck extends Component {
 				onPress: () => this.props.navigation.navigate('Home')
 			}, {
 				text: 'Yes',
-				onPress: () => console.warn('I WANT :(')
+				onPress: () => this.props.navigation.navigate('Single', { title: deck.title, modal: true })
 			}]
 		)
 	};
@@ -78,11 +80,11 @@ class AddDeck extends Component {
 		return (
 			<KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={100} style={{flex: 1, paddingLeft: 20, paddingRight: 20}}>
 				<View style={{flex: 1}}>
-					<TextLabel>Title</TextLabel>
+					<StyledTextLabel>Title</StyledTextLabel>
 					<StyledInput value={input} onChangeText={this._handleInputChange} placeholder="Type here..." underlineColorAndroid={inputError ? colors.fail : '#dadada'} />
 					{inputError && <ErrorLabel>Deck title is required</ErrorLabel>}
 
-					<TextLabel>Category</TextLabel>
+					<StyledTextLabel>Category</StyledTextLabel>
 					<StyledPicker>
 						<Picker selectedValue={category} onValueChange={this._handleSelectChange} mode='dropdown'>
 							<Picker.Item label="Software Development" value="software" />
@@ -100,16 +102,6 @@ class AddDeck extends Component {
 		);
 	}
 };
-
-const TextLabel = ColorText.extend`
-	margin-top: 30px;
-	margin-bottom: 15px;
-	font-size: 18
-`;
-
-const ErrorLabel = styled.Text`
-	color: ${colors.fail}
-`;
 
 const ButtonContainer = styled.View`
 	position: absolute;

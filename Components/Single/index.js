@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Modal } from 'react-native';
+import { View, Text } from 'react-native';
+import Modal from 'react-native-modal';
+import styled from 'styled-components';
 import { saveDeck } from '../../Actions';
 import NotFound from './NotFound';
+import AddCard from '../AddCard';
+import TouchButton from '../TouchButton';
 
 class Single extends Component {
 	state = {
-		addCardModal: false
+		addCardModal: this.props.navigation.state.params.modal || false
 	};
 
 	static navigationOptions = ( { navigation } ) => {
@@ -17,9 +21,9 @@ class Single extends Component {
 		}
 	};
 
-	openInsertModal = () => {
+	toggleModal = () => {
 		this.setState({
-			addCardModal: true
+			addCardModal: !this.state.addCardModal
 		});
 	}
 
@@ -29,14 +33,40 @@ class Single extends Component {
 
 		return (
 			<View style={{flex: 1}}>
-				{(!card.questions || card.questions.length <= 0) && <NotFound openInsertModal={this.openInsertModal} />}
+				{(!card.questions || card.questions.length <= 0) && <NotFound openInsertModal={this.toggleModal} />}
+
+				<Modal
+					isVisible={addCardModal}
+					onBackButtonPress={this.toggleModal}
+					onBackdropPress={this.toggleModal}
+					onSwipe={this.toggleModal}
+					swipeDirection='down'
+					style={{justifyContent: 'center'}}
+				>
+					<AddCard card={card} toggleModal={this.toggleModal} />
+				</Modal>
 
 				<Text>ESTOU NA SINGLE :D</Text>
 				<Text>{JSON.stringify(card)}</Text>
+
+				{(card.questions && card.questions.length > 0) && (
+					<ButtonContainer>
+						<TouchButton onPress={this.toggleModal}>Start Quiz</TouchButton>
+						<TouchButton type="secondaryL" onPress={this.toggleModal}>Add Card</TouchButton>
+					</ButtonContainer>
+				)}
+
 			</View>
 		);
 	};
 };
+
+const ButtonContainer = styled.View`
+	position: absolute;
+	left: -20;
+	right: -20;
+	bottom: 0;
+`;
 
 const mapStateToProps = (cards, currProps) => {
 	const { title } = currProps.navigation.state.params;

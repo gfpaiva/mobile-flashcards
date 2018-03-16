@@ -30,18 +30,19 @@ export const saveDeckTitle = ({ title, category }) => {
 		[title]: {
 			title,
 			category,
-			questions: []
+			questions: [],
+			complete: false
 		}
 	}));
 };
 
-export const addCardToDeck = ({ id, question }) => {
+export const addCardToDeck = (question, deck) => {
+	const newQuestions = deck.questions.concat(question);
+
 	return AsyncStorage.mergeItem(STORAGE_KEY, JSON.stringify({
-		[id]: {
-			questions: [
-				...[id].questions,
-				question
-			]
+		[deck.title]: {
+			...deck[deck.title],
+			questions: newQuestions
 		}
 	}));
 };

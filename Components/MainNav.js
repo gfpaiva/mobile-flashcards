@@ -18,7 +18,7 @@ const MainNav = StackNavigator({
 		}
 	},
 	Single: {
-		screen: Single
+		screen: Single,
 	}
 }, {
 	navigationOptions: {

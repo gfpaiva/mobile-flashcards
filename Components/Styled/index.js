@@ -49,6 +49,16 @@ export const StyledInput = styled.TextInput`
 	width: 100%
 `;
 
+export const ErrorLabel = styled.Text`
+	color: ${colors.fail}
+`;
+
+export const StyledTextLabel = ColorText.extend`
+	margin-top: 30px;
+	margin-bottom: 15px;
+	font-size: 18
+`;
+
 export const StyledPicker = styled.View`
 	border: 1px solid #dadada;
 	background-color: transparent;

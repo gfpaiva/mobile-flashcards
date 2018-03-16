@@ -1,13 +1,14 @@
 import {
 	RECEIVE_CARDS,
-	SAVE_DECK
+	SAVE_DECK,
+	SAVE_CARD,
 } from '../Actions';
 
 const initialState = {};
 
 
 export default function cards(state = initialState, action) {
-	const { deck } = action;
+	const { deck, card } = action;
 	switch(action.type) {
 		case RECEIVE_CARDS:
 			return {
@@ -18,8 +19,17 @@ export default function cards(state = initialState, action) {
 			return {
 				...state,
 				[deck.title]: {
-					title: deck.title,
-					category: deck.category
+					...deck
+				}
+			}
+		case SAVE_CARD:
+			const newQuestions = state[deck.title].questions.concat(card);
+
+			return {
+				...state,
+				[deck.title]: {
+					...state[deck.title],
+					questions : newQuestions
 				}
 			}
 		default:
