@@ -6,9 +6,30 @@ import styled from "styled-components";
 import { withNavigation } from 'react-navigation';
 import { values as _values } from 'lodash';
 import { pluralize } from '../Utils/Helpers';
-import colors, { ColorText, ColorTextSec, StyledRow, StyledViewContainer } from './Styled';
+import colors, { ColorText, ColorTextSec, StyledRow, StyledViewContainer, getColorCateogry } from './Styled';
 
-const DeckList = ( { cards, navigation } ) => {
+const SlingeList = ( { cards, title, navigation } ) => (
+	<View>
+		{cards && cards.length > 0 && (
+			<StyledViewContainer style={{marginTop: 20}}>
+				<ColorTextSec>{title}</ColorTextSec>
+			</StyledViewContainer>
+		)}
+
+		{cards && cards.length > 0 && cards.map((card, index) => (
+			<StyledTouch key={index} onPress={() => navigation.navigate('Single', { title: card.title })}>
+				<StyledIcon name="cards-outline" size={32} color="#fff" bgColor={getColorCateogry(card.category)} />
+
+				<StyledDeckRow>
+					<CardTitle>{card.title}</CardTitle>
+					<ColorTextSec> {(card.questions && card.questions.length > 0) ? `${card.questions.length} ${pluralize(card.questions, 'card')}` : '0 cards 😐' } </ColorTextSec>
+				</StyledDeckRow>
+			</StyledTouch>
+		))}
+	</View>
+);
+
+const DeckList = ( { cards, navigation, currentCards, archivedCards } ) => {
 
 	if(!cards || cards.length <= 0) {
 		return (
@@ -21,20 +42,8 @@ const DeckList = ( { cards, navigation } ) => {
 
 	return (
 		<View>
-			<StyledViewContainer style={{marginTop: 20}}>
-				<ColorTextSec>CURRENT</ColorTextSec>
-			</StyledViewContainer>
-
-			{cards && cards.length > 0 && cards.map((card, index) => (
-				<StyledTouch key={index} onPress={() => navigation.navigate('Single', { title: card.title })}>
-					<StyledIcon name="cards-outline" size={32} color="#fff" />
-
-					<StyledDeckRow>
-						<CardTitle>{card.title}</CardTitle>
-						<ColorTextSec> {(card.questions && card.questions.length > 0) ? `${card.questions.length} ${pluralize(card.questions, 'card')}` : '0 cards 😐' } </ColorTextSec>
-					</StyledDeckRow>
-				</StyledTouch>
-			))}
+			<SlingeList cards={currentCards} title="CURRENT" navigation={navigation}/>
+			<SlingeList cards={archivedCards} title="COMPLETED CARDS" navigation={navigation}/>
 		</View>
 	);
 };
@@ -73,9 +82,13 @@ const NotFoundText = ColorTextSec.extend`
 
 const mapStateToProps = cards => {
 	const cardsInArray = _values(cards);
+	const currentCards = cardsInArray.filter(card => !card.complete);
+	const archivedCards = cardsInArray.filter(card => card.complete);
 
 	return {
-		cards: cardsInArray
+		cards: cardsInArray,
+		currentCards,
+		archivedCards
 	}
 };
 

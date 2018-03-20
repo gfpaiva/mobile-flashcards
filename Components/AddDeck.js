@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { KeyboardAvoidingView, Picker, View, Keyboard, Alert } from 'react-native';
 import styled from 'styled-components';
 import { saveDeck } from '../Actions';
-import colors, { StyledInput, StyledPicker, ErrorLabel, StyledTextLabel } from './Styled';
+import colors, { StyledInput, StyledPicker, ErrorLabel, StyledTextLabel, ButtonContainer, StyledPageTitle } from './Styled';
 import TouchButton from './TouchButton';
 
 class AddDeck extends Component {
@@ -80,6 +80,7 @@ class AddDeck extends Component {
 		return (
 			<KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={100} style={{flex: 1, paddingLeft: 20, paddingRight: 20}}>
 				<View style={{flex: 1}}>
+					<StyledPageTitle>Add a new Deck</StyledPageTitle>
 					<StyledTextLabel>Title</StyledTextLabel>
 					<StyledInput value={input} onChangeText={this._handleInputChange} placeholder="Type here..." underlineColorAndroid={inputError ? colors.fail : '#dadada'} />
 					{inputError && <ErrorLabel>Deck title is required</ErrorLabel>}
@@ -102,13 +103,6 @@ class AddDeck extends Component {
 		);
 	}
 };
-
-const ButtonContainer = styled.View`
-	position: absolute;
-	left: -20;
-	right: -20;
-	bottom: 0;
-`;
 
 const mapStateToProps = (cards) => ({ cards });
 

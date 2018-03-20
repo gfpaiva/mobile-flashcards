@@ -10,6 +10,15 @@ const colors = {
 	fail: '#ff7777',
 };
 
+const colorsCategories = {
+	software: '#051529',
+	math: '#104484',
+	literature: '#1b73df',
+	general: '#72aaee',
+};
+
+export const getColorCateogry = category => colorsCategories[category];
+
 export const StyledScrollContainer = styled.ScrollView`
 	padding: 20px
 `;
@@ -64,6 +73,18 @@ export const StyledPicker = styled.View`
 	background-color: transparent;
 	padding: 10px 0;
 	width: 100%
+`;
+
+export const ButtonContainer = styled.View`
+	position: absolute;
+	left: -20;
+	right: -20;
+	bottom: 0;
+`;
+
+export const StyledPageTitle = styled.Text`
+	font-size: 26;
+	color: #000
 `;
 
 // https://coolors.co/272932-4d7ea8-d87f7f-fffd98-bde4a7

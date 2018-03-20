@@ -12,19 +12,19 @@ const MainNav = StackNavigator({
 		}
 	},
 	AddDeck: {
-		screen: AddDeck,
-		navigationOptions: {
-			title: 'Add a new deck'
-		}
+		screen: AddDeck
 	},
 	Single: {
+		screen: Single
+	},
+	Quiz: {
 		screen: Single,
 	}
 }, {
 	navigationOptions: {
-		headerTintColor: '#fff',
+		headerTintColor: '#000',
 		headerStyle: {
-			backgroundColor: colors.primary
+			backgroundColor: 'transparent'
 		}
 	}
 });

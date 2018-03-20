@@ -4,8 +4,8 @@ import { Constants } from 'expo';
 import colors from './Styled';
 
 const AppStatusBar = props => (
-	<View style={{ backgroundColor: '#64a8ff', height: Constants.statusBarHeight }}>
-		<StatusBar translucent backgroundColor='#64a8ff' {...props} />
+	<View style={{ backgroundColor: '#000', height: Constants.statusBarHeight }}>
+		<StatusBar translucent backgroundColor='#000' {...props} />
 	</View>
 );
 
