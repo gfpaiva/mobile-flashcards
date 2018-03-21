@@ -14,17 +14,59 @@ import { pluralize, getCategoryName, sliderWidth, itemWidth, slideHeight } from 
 
 class Single extends Component {
 	state = {
-		addCardModal: this.props.navigation.state.params.modal || false
+		addCardModal: this.props.navigation.state.params.modal || false,
+		startedQuiz: false,
+		viewAnswer: false
 	};
 
 	toggleModal = () => {
 		this.setState({
 			addCardModal: !this.state.addCardModal
 		});
-	}
+	};
+
+	startQuiz = () => {
+		this.setState({
+			startedQuiz: true
+		});
+
+		this._carousel.snapToItem(0);
+	};
+
+	stopQuiz = () => {
+		this.setState({
+			startedQuiz: false,
+			viewAnswer: false
+		});
+
+		this._carousel.snapToItem(0);
+	};
 
 	_renderItem = ( {item, index} ) => {
-		const { category } = this.props.card;
+		const { category, questions } = this.props.card;
+		const { startedQuiz, viewAnswer } = this.state;
+
+		if(startedQuiz) {
+			return (
+				<SlideCard width={itemWidth} height={slideHeight}>
+					<StyledQuizNum>{index +1}/{questions.length}</StyledQuizNum>
+					<Text>{item.question}</Text>
+
+					{viewAnswer !== index && <LinkText onPress={() => this.setState({ viewAnswer: index })}>View Answer</LinkText>}
+
+					{viewAnswer === index && (
+						<View style={{width: itemWidth, justifyContent: 'space-between', flex: 1}}>
+							<Text>{item.answer}</Text>
+							<View>
+								<TouchButton type="success">Correct</TouchButton>
+								<TouchButton type="fail">Incorrect</TouchButton>
+							</View>
+						</View>
+					)}
+				</SlideCard>
+			)
+		}
+
 		return (
 			<View>
 				{!item.isAdd && (
@@ -48,8 +90,8 @@ class Single extends Component {
 
 	render() {
 		const { card } = this.props;
-		const { addCardModal } = this.state;
-		const dataToCarousel = card.questions.concat({isAdd: true});
+		const { addCardModal, startedQuiz, viewAnswer } = this.state;
+		const dataToCarousel = startedQuiz ? card.questions : card.questions.concat({isAdd: true});
 
 		return (
 			<View style={{flex: 1}}>
@@ -85,11 +127,20 @@ class Single extends Component {
 							itemWidth={itemWidth}
 							inactiveSlideScale={0.94}
 							inactiveSlideOpacity={0.7}
+							onSnapToItem={() => viewAnswer !== false && this.setState({ viewAnswer: false })}
 						/>
 
-						<ButtonContainer>
-							<TouchButton category={card.category} onPress={this.toggleModal}>Start Quiz</TouchButton>
-						</ButtonContainer>
+						{!startedQuiz && (
+							<ButtonContainer>
+								<TouchButton category={card.category} onPress={this.startQuiz}>Start Quiz</TouchButton>
+							</ButtonContainer>
+						)}
+
+						{startedQuiz && (
+							<ButtonContainer>
+								<TouchButton category={card.category} onPress={this.stopQuiz}>Stop Quiz</TouchButton>
+							</ButtonContainer>
+						)}
 					</View>
 				)}
 
@@ -148,9 +199,16 @@ const SecretIcon = styled(MaterialCommunityIcons)`
 	opacity: 1;
 `;
 
+const StyledQuizNum = styled.Text`
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	font-size: 18px;
+`
+
 const mapStateToProps = (cards, currProps) => {
 	const { title } = currProps.navigation.state.params;
-	const card = cards[title]
+	const card = cards[title];
 
 	return {
 		card
