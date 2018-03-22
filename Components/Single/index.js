@@ -105,8 +105,6 @@ class Single extends Component {
 		const { addCardModal, startedQuiz, viewAnswer } = this.state;
 		const dataToCarousel = startedQuiz ? card.questions : card.questions.concat({isAdd: true});
 
-		console.warn(this.state);
-
 		return (
 			<View style={{flex: 1}}>
 				{(!card.questions || card.questions.length <= 0) && <NotFound openInsertModal={this.toggleModal} />}
