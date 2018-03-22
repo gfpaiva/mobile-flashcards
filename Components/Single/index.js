@@ -16,7 +16,7 @@ class Single extends Component {
 	state = {
 		addCardModal: this.props.navigation.state.params.modal || false,
 		startedQuiz: false,
-		viewAnswer: false
+		viewAnswer: []
 	};
 
 	toggleModal = () => {
@@ -36,15 +36,27 @@ class Single extends Component {
 	stopQuiz = () => {
 		this.setState({
 			startedQuiz: false,
-			viewAnswer: false
+			viewAnswer: []
 		});
 
 		this._carousel.snapToItem(0);
 	};
 
+	viewAnswerHander = idx => {
+		this.setState(( { viewAnswer } ) => {
+			const newAnswer = viewAnswer.concat(idx);
+
+			return {
+				viewAnswer: newAnswer
+			}
+		});
+	};
+
 	_renderItem = ( {item, index} ) => {
 		const { category, questions } = this.props.card;
 		const { startedQuiz, viewAnswer } = this.state;
+
+		console.warn(this.state);
 
 		if(startedQuiz) {
 			return (
@@ -52,9 +64,9 @@ class Single extends Component {
 					<StyledQuizNum>{index +1}/{questions.length}</StyledQuizNum>
 					<Text>{item.question}</Text>
 
-					{viewAnswer !== index && <LinkText onPress={() => this.setState({ viewAnswer: index })}>View Answer</LinkText>}
+					{viewAnswer.indexOf(index) < 0 && <LinkText onPress={() => this.viewAnswerHander(index)}>View Answer</LinkText>}
 
-					{viewAnswer === index && (
+					{viewAnswer.indexOf(index) >= 0 && (
 						<View style={{width: itemWidth, justifyContent: 'space-between', flex: 1}}>
 							<Text>{item.answer}</Text>
 							<View>
@@ -93,6 +105,8 @@ class Single extends Component {
 		const { addCardModal, startedQuiz, viewAnswer } = this.state;
 		const dataToCarousel = startedQuiz ? card.questions : card.questions.concat({isAdd: true});
 
+		console.warn(this.state);
+
 		return (
 			<View style={{flex: 1}}>
 				{(!card.questions || card.questions.length <= 0) && <NotFound openInsertModal={this.toggleModal} />}
@@ -127,7 +141,6 @@ class Single extends Component {
 							itemWidth={itemWidth}
 							inactiveSlideScale={0.94}
 							inactiveSlideOpacity={0.7}
-							onSnapToItem={() => viewAnswer !== false && this.setState({ viewAnswer: false })}
 						/>
 
 						{!startedQuiz && (
