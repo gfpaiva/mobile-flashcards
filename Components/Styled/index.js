@@ -33,6 +33,12 @@ export const StyledRow = StyledViewContainer.extend`
 	align-items: center;
 `;
 
+export const SpaceBetweenRow = StyledRow.extend`
+	flex-direction: row;
+	justify-content: space-between;
+	align-content: center;
+`;
+
 export const CenterView = StyledViewContainer.extend`
 	flex: 1;
 	align-items: center;
@@ -49,6 +55,11 @@ export const ColorTextSec = styled.Text`
 
 export const LinkText = styled.TouchableOpacity`
 	color: ${colors.primary}
+`;
+
+export const StyledSecText = ColorTextSec.extend`
+	font-size: 18;
+	padding: 0 20px;
 `;
 
 export const StyledInput = styled.TextInput`

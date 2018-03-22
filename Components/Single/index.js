@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import Carousel from 'react-native-snap-carousel';
 import styled from 'styled-components';
-import colors, { StyledViewContainer, getColorCateogry, ButtonContainer, StyledPageTitle } from '../Styled';
+import colors, { StyledViewContainer, getColorCateogry, ButtonContainer, StyledPageTitle, SpaceBetweenRow, StyledSecText } from '../Styled';
 import NotFound from './NotFound';
 import AddCard from '../AddCard';
 import TouchButton from '../TouchButton';
@@ -14,9 +14,7 @@ import { pluralize, getCategoryName, sliderWidth, itemWidth, slideHeight } from 
 
 class Single extends Component {
 	state = {
-		addCardModal: this.props.navigation.state.params.modal || false,
-		startedQuiz: false,
-		viewAnswer: []
+		addCardModal: this.props.navigation.state.params.modal || false
 	};
 
 	toggleModal = () => {
@@ -25,59 +23,8 @@ class Single extends Component {
 		});
 	};
 
-	startQuiz = () => {
-		this.setState({
-			startedQuiz: true
-		});
-
-		this._carousel.snapToItem(0);
-	};
-
-	stopQuiz = () => {
-		this.setState({
-			startedQuiz: false,
-			viewAnswer: []
-		});
-
-		this._carousel.snapToItem(0);
-	};
-
-	viewAnswerHander = idx => {
-		this.setState(( { viewAnswer } ) => {
-			const newAnswer = viewAnswer.concat(idx);
-
-			return {
-				viewAnswer: newAnswer
-			}
-		});
-	};
-
 	_renderItem = ( {item, index} ) => {
 		const { category, questions } = this.props.card;
-		const { startedQuiz, viewAnswer } = this.state;
-
-		console.warn(this.state);
-
-		if(startedQuiz) {
-			return (
-				<SlideCard width={itemWidth} height={slideHeight}>
-					<StyledQuizNum>{index +1}/{questions.length}</StyledQuizNum>
-					<Text>{item.question}</Text>
-
-					{viewAnswer.indexOf(index) < 0 && <LinkText onPress={() => this.viewAnswerHander(index)}>View Answer</LinkText>}
-
-					{viewAnswer.indexOf(index) >= 0 && (
-						<View style={{width: itemWidth, justifyContent: 'space-between', flex: 1}}>
-							<Text>{item.answer}</Text>
-							<View>
-								<TouchButton type="success">Correct</TouchButton>
-								<TouchButton type="fail">Incorrect</TouchButton>
-							</View>
-						</View>
-					)}
-				</SlideCard>
-			)
-		}
 
 		return (
 			<View>
@@ -91,7 +38,7 @@ class Single extends Component {
 				{item.isAdd && (
 					<SlideCard width={itemWidth} height={slideHeight}>
 						<TouchableOpacity onPress={this.toggleModal}>
-							<MaterialCommunityIcons name="plus-circle" size={76} color={getColorCateogry(category)}/>
+							<MaterialCommunityIcons name="plus-circle" size={76} color={getColorCateogry(category)} style={{textAlign: 'center'}}/>
 							<CarouselAddCard color={getColorCateogry(category)}>Add Card</CarouselAddCard>
 						</TouchableOpacity>
 					</SlideCard>
@@ -101,9 +48,9 @@ class Single extends Component {
 	};
 
 	render() {
-		const { card } = this.props;
-		const { addCardModal, startedQuiz, viewAnswer } = this.state;
-		const dataToCarousel = startedQuiz ? card.questions : card.questions.concat({isAdd: true});
+		const { card, navigation } = this.props;
+		const { addCardModal } = this.state;
+		const carouselCards = card.questions.concat({isAdd: true});
 
 		return (
 			<View style={{flex: 1}}>
@@ -122,17 +69,17 @@ class Single extends Component {
 
 				{(card.questions && card.questions.length > 0) && (
 					<View style={{flex: 1}}>
-						<StyledViewContainer>
-							<StyledRow>
+						<View style={{marginBottom: 50}}>
+							<SpaceBetweenRow>
 								<StyledPageTitle>{card.title}</StyledPageTitle>
 								<StyledSecText>{card.questions.length} {pluralize(card.questions, 'card')}</StyledSecText>
-							</StyledRow>
+							</SpaceBetweenRow>
 							<StyledSecText>{getCategoryName(card.category)}</StyledSecText>
-						</StyledViewContainer>
+						</View>
 
 						<Carousel
 							ref={(c) => { this._carousel = c; }}
-							data={dataToCarousel}
+							data={carouselCards}
 							layout={'default'}
 							renderItem={this._renderItem}
 							sliderWidth={sliderWidth}
@@ -141,17 +88,9 @@ class Single extends Component {
 							inactiveSlideOpacity={0.7}
 						/>
 
-						{!startedQuiz && (
-							<ButtonContainer>
-								<TouchButton category={card.category} onPress={this.startQuiz}>Start Quiz</TouchButton>
-							</ButtonContainer>
-						)}
-
-						{startedQuiz && (
-							<ButtonContainer>
-								<TouchButton category={card.category} onPress={this.stopQuiz}>Stop Quiz</TouchButton>
-							</ButtonContainer>
-						)}
+						<ButtonContainer>
+							<TouchButton category={card.category} onPress={() => navigation.navigate('Quiz', { title: card.title })}>Start Quiz</TouchButton>
+						</ButtonContainer>
 					</View>
 				)}
 
@@ -159,17 +98,6 @@ class Single extends Component {
 		);
 	};
 };
-
-const StyledSecText = styled.Text`
-	font-size: 18;
-	color: ${colors.secondaryL}
-`;
-
-const StyledRow = styled.View`
-	flex-direction: row;
-	justify-content: space-between;
-	align-content: center;
-`;
 
 const SlideCard = styled.View`
 	background-color: #fff;
@@ -209,13 +137,6 @@ const SecretIcon = styled(MaterialCommunityIcons)`
 	padding: 12px;
 	opacity: 1;
 `;
-
-const StyledQuizNum = styled.Text`
-	position: absolute;
-	top: 20px;
-	left: 20px;
-	font-size: 18px;
-`
 
 const mapStateToProps = (cards, currProps) => {
 	const { title } = currProps.navigation.state.params;

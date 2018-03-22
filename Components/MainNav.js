@@ -2,6 +2,7 @@ import { StackNavigator } from 'react-navigation';
 import Home from './Home';
 import AddDeck from './AddDeck';
 import Single from './Single';
+import Quiz from './Quiz';
 import colors from './Styled';
 
 const MainNav = StackNavigator({
@@ -18,7 +19,7 @@ const MainNav = StackNavigator({
 		screen: Single
 	},
 	Quiz: {
-		screen: Single,
+		screen: Quiz,
 	}
 }, {
 	navigationOptions: {
