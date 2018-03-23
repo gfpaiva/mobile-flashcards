@@ -4,8 +4,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors, { StyledViewContainer, getColorCateogry, ButtonContainer, StyledPageTitle, SpaceBetweenRow, StyledSecText, CenterView, StyledRow } from './Styled';
-import { getPercentage } from '../Utils/Helpers';
+import { getPercentage, pluralize } from '../Utils/Helpers';
 import TouchButton from './TouchButton';
+import { saveCompletedDeck } from '../Actions';
 
 class Quiz extends Component {
 	state = {
@@ -17,6 +18,7 @@ class Quiz extends Component {
 
 	handleAnswer = pontuation => {
 		this.setState(prevState => {
+			const { card } = this.props;
 			const questionIdx = prevState.questionIdx + 1;
 			let correct = prevState.correct;
 			if(pontuation) correct = prevState.correct.concat(questionIdx);
@@ -26,11 +28,13 @@ class Quiz extends Component {
 				showAnswer: false
 			};
 
-			if( questionIdx === this.props.card.questions.length ) {
+			if( questionIdx === card.questions.length ) {
 				newState = {
 					...newState,
 					complete: true
 				}
+
+			this.props.dispatch(saveCompletedDeck(card));
 			} else {
 				newState= {
 					...newState,
@@ -40,23 +44,23 @@ class Quiz extends Component {
 
 			return newState;
 		});
-
-		if(this.state.complete) {
-			alert('COMPLETED');
-		}
 	};
 
 	render() {
-		const { card } = this.props;
+		const { card, navigation } = this.props;
 		const { questionIdx, correct, showAnswer, complete } = this.state
 		const currentCard = card.questions[questionIdx];
 
 		if(complete) {
 			return (
 				<CenterView>
-					<StyledPageTitle>🎉Completed {card.title}🎉</StyledPageTitle>
-					<Text>You have been completed this quiz with {correct.length} corrected questions of {card.questions.length}</Text>
-					<Text>Accuracy of {getPercentage(correct.length, card.questions.length)}</Text>
+					<StyledPageTitle style={{textAlign: 'center'}}> 🎉 🎉 🎉 </StyledPageTitle>
+					<StyledPageTitle style={{textAlign: 'center'}}>Congratulations!!! You got {correct.length} out of {card.questions.length} {pluralize(card.questions.length, 'question')}</StyledPageTitle>
+					<StyledPageTitle style={{textAlign: 'center'}}>Average score: {getPercentage(correct.length, card.questions.length)}</StyledPageTitle>
+
+					<ButtonContainer>
+						<TouchButton category={card.category} onPress={() => navigation.navigate('Home')}>Back to home</TouchButton>
+					</ButtonContainer>
 				</CenterView>
 			);
 		}
@@ -67,7 +71,7 @@ class Quiz extends Component {
 					<SpaceBetweenRow>
 						<StyledPageTitle>{questionIdx + 1}/{card.questions.length}</StyledPageTitle>
 					</SpaceBetweenRow>
-					<StyledSecText>{currentCard.question}</StyledSecText>
+					<StyledSecText style={{fontSize: 28}}>{currentCard.question}</StyledSecText>
 				</View>
 
 				{!showAnswer && (
@@ -82,18 +86,16 @@ class Quiz extends Component {
 
 				{showAnswer && (
 					<CenterView>
-						<View>
-							<Text style={{fontSize: 70}}>{currentCard.answer}</Text>
-						</View>
-						<View>
-							<StyledRow>
+						<View style={{padding: 20, backgroundColor: '#fff'}}>
+							<Text style={{fontSize: 22, textAlign: 'center'}}>{currentCard.answer}</Text>
+							<View style={{flexDirection: 'row'}}>
 								<StyledThumbs onPress={() => this.handleAnswer(true)} type="success">
 									<MaterialCommunityIcons name="thumb-up" color="#fff" size={50}/>
 								</StyledThumbs>
 								<StyledThumbs onPress={() => this.handleAnswer(false)} type="fail">
 									<MaterialCommunityIcons name="thumb-down" color="#fff" size={50}/>
 								</StyledThumbs>
-							</StyledRow>
+							</View>
 						</View>
 					</CenterView>
 				)}
@@ -106,6 +108,7 @@ const StyledThumbs = styled.TouchableOpacity`
 	background-color: ${props => colors[props.type]}
 	padding: 20px;
 	border-radius: 70px
+	margin: 20px;
 `;
 
 const mapStateToProps = (cards, currProps) => {

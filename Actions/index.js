@@ -3,6 +3,7 @@ import * as API from '../Utils/API';
 export const RECEIVE_CARDS = 'RECEIVE_CARDS';
 export const SAVE_DECK = 'SAVE_DECK';
 export const SAVE_CARD = 'SAVE_CARD';
+export const COMPLETED_DECK = 'COMPLETED_DECK';
 
 export const receiveCards = cards => ({
 	type: RECEIVE_CARDS,
@@ -32,4 +33,13 @@ export const saveCard = (card, deck) => {
 		deck
 	};
 };
+
+export const saveCompletedDeck = deck => {
+	API.setCompletedDeck(deck);
+
+	return {
+		type: COMPLETED_DECK,
+		deck
+	}
+}
 

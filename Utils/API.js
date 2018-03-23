@@ -46,3 +46,13 @@ export const addCardToDeck = (question, deck) => {
 		}
 	}));
 };
+
+export const setCompletedDeck = (deck) => {
+
+	return AsyncStorage.mergeItem(STORAGE_KEY, JSON.stringify({
+		[deck.title]: {
+			...deck[deck.title],
+			complete: true
+		}
+	}));
+};
