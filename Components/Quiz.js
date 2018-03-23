@@ -4,12 +4,13 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors, { StyledViewContainer, getColorCateogry, ButtonContainer, StyledPageTitle, SpaceBetweenRow, StyledSecText, CenterView, StyledRow } from './Styled';
+import { getPercentage } from '../Utils/Helpers';
 import TouchButton from './TouchButton';
 
 class Quiz extends Component {
 	state = {
 		questionIdx: 0,
-		correct: 0,
+		correct: [],
 		showAnswer: false,
 		complete: false
 	};
@@ -17,22 +18,48 @@ class Quiz extends Component {
 	handleAnswer = pontuation => {
 		this.setState(prevState => {
 			const questionIdx = prevState.questionIdx + 1;
-			const correct = prevState.correct + pontuation;
+			let correct = prevState.correct;
+			if(pontuation) correct = prevState.correct.concat(questionIdx);
 
-			if( questionIdx === this.props.card.questions.length )
-
-			return {
-				questionIdx,
+			let newState = {
 				correct,
 				showAnswer: false
+			};
+
+			if( questionIdx === this.props.card.questions.length ) {
+				newState = {
+					...newState,
+					complete: true
+				}
+			} else {
+				newState= {
+					...newState,
+					questionIdx
+				}
 			}
+
+			return newState;
 		});
-	}
+
+		if(this.state.complete) {
+			alert('COMPLETED');
+		}
+	};
 
 	render() {
 		const { card } = this.props;
-		const { questionIdx, correct, showAnswer } = this.state
+		const { questionIdx, correct, showAnswer, complete } = this.state
 		const currentCard = card.questions[questionIdx];
+
+		if(complete) {
+			return (
+				<CenterView>
+					<StyledPageTitle>🎉Completed {card.title}🎉</StyledPageTitle>
+					<Text>You have been completed this quiz with {correct.length} corrected questions of {card.questions.length}</Text>
+					<Text>Accuracy of {getPercentage(correct.length, card.questions.length)}</Text>
+				</CenterView>
+			);
+		}
 
 		return (
 			<View style={{flex: 1}}>
@@ -60,10 +87,10 @@ class Quiz extends Component {
 						</View>
 						<View>
 							<StyledRow>
-								<StyledThumbs onPress={} type="success">
+								<StyledThumbs onPress={() => this.handleAnswer(true)} type="success">
 									<MaterialCommunityIcons name="thumb-up" color="#fff" size={50}/>
 								</StyledThumbs>
-								<StyledThumbs type="fail">
+								<StyledThumbs onPress={() => this.handleAnswer(false)} type="fail">
 									<MaterialCommunityIcons name="thumb-down" color="#fff" size={50}/>
 								</StyledThumbs>
 							</StyledRow>

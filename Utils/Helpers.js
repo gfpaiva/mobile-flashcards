@@ -4,6 +4,10 @@ export function pluralize(array, word) {
 	return array.length > 1 ? `${word}s` : word;
 };
 
+export function getPercentage(x, y) {
+	return `${(x / y) * 100}%`;
+}
+
 const categories = {
 	software: 'Software Development',
 	math: 'Mathematics',
