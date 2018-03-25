@@ -1,18 +1,21 @@
 import * as API from '../Utils/API';
 
-export const RECEIVE_CARDS = 'RECEIVE_CARDS';
+export const RECEIVE_DECKS = 'RECEIVE_DECKS';
 export const SAVE_DECK = 'SAVE_DECK';
 export const SAVE_CARD = 'SAVE_CARD';
 export const COMPLETED_DECK = 'COMPLETED_DECK';
 
-export const receiveCards = cards => ({
-	type: RECEIVE_CARDS,
-	cards
+export const receiveDecks = decks => ({
+	type: RECEIVE_DECKS,
+	decks
 });
 
-export const getStorageCards = () => dispatch => (
+export const getStorageDecks = () => dispatch => (
 	API.getDecks()
-		.then(cards => dispatch(receiveCards(cards)))
+		.then(decks => {
+			console.log(decks);
+			return dispatch(receiveDecks(decks));
+		})
 );
 
 export const saveDeck = deck => {
@@ -29,8 +32,8 @@ export const saveCard = (card, deck) => {
 
 	return {
 		type: SAVE_CARD,
+		deck,
 		card,
-		deck
 	};
 };
 

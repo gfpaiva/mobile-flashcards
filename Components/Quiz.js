@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 import styled from 'styled-components';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import colors, { StyledViewContainer, getColorCateogry, ButtonContainer, StyledPageTitle, SpaceBetweenRow, StyledSecText, CenterView, StyledRow } from './Styled';
+import colors, {
+	ButtonContainer,
+	StyledPageTitle,
+	SpaceBetweenRow,
+	StyledSecText,
+	CenterView
+} from './Styled';
 import { getPercentage, pluralize } from '../Utils/Helpers';
+import { setLocalNotification, clearLocalNotification } from '../Utils/Notification';
 import TouchButton from './TouchButton';
 import { saveCompletedDeck } from '../Actions';
 
@@ -13,28 +20,45 @@ class Quiz extends Component {
 		questionIdx: 0,
 		correct: [],
 		showAnswer: false,
-		complete: false
+		complete: false,
+		animatedOpacityIn: new Animated.Value(0),
+		animatedOpacityOut: new Animated.Value(1),
+	};
+
+	handleShowAnswer = () => {
+		const { animatedOpacityOut, animatedOpacityIn } = this.state;
+
+		Animated.timing(animatedOpacityOut, { toValue: 0, duration: 300 }).start(() => {
+			this.setState({ showAnswer: true });
+
+			Animated.timing(animatedOpacityIn, { toValue: 1, duration: 300 }).start();
+		});
 	};
 
 	handleAnswer = pontuation => {
 		this.setState(prevState => {
-			const { card } = this.props;
+			const { deck } = this.props;
 			const questionIdx = prevState.questionIdx + 1;
 			let correct = prevState.correct;
 			if(pontuation) correct = prevState.correct.concat(questionIdx);
 
 			let newState = {
 				correct,
-				showAnswer: false
+				showAnswer: false,
+				animatedOpacityOut: new Animated.Value(1),
+				animatedOpacityIn: new Animated.Value(0)
 			};
 
-			if( questionIdx === card.questions.length ) {
+			if( questionIdx === deck.questions.length ) {
 				newState = {
 					...newState,
 					complete: true
 				}
 
-			this.props.dispatch(saveCompletedDeck(card));
+				clearLocalNotification()
+					.then(setLocalNotification);
+
+				this.props.dispatch(saveCompletedDeck(deck));
 			} else {
 				newState= {
 					...newState,
@@ -46,47 +70,66 @@ class Quiz extends Component {
 		});
 	};
 
+	handleRestart = () => {
+		this.setState({
+			questionIdx: 0,
+			correct: [],
+			showAnswer: false,
+			complete: false,
+			animatedOpacityOut: new Animated.Value(1),
+			animatedOpacityIn: new Animated.Value(0)
+		});
+	};
+
 	render() {
-		const { card, navigation } = this.props;
-		const { questionIdx, correct, showAnswer, complete } = this.state
-		const currentCard = card.questions[questionIdx];
+		const { deck, navigation } = this.props;
+		const { questionIdx,
+				correct,
+				showAnswer,
+				complete,
+				animatedOpacityOut,
+				animatedOpacityIn
+		} = this.state;
+		const currentCard = deck.questions[questionIdx];
+		const StyledAnimatedShowAnswer = Animated.createAnimatedComponent(CenterView);
 
 		if(complete) {
 			return (
 				<CenterView>
-					<StyledPageTitle style={{textAlign: 'center'}}> 🎉 🎉 🎉 </StyledPageTitle>
-					<StyledPageTitle style={{textAlign: 'center'}}>Congratulations!!! You got {correct.length} out of {card.questions.length} {pluralize(card.questions.length, 'question')}</StyledPageTitle>
-					<StyledPageTitle style={{textAlign: 'center'}}>Average score: {getPercentage(correct.length, card.questions.length)}</StyledPageTitle>
+					<StyledPageTitleCenter> 🎉 🎉 🎉 </StyledPageTitleCenter>
+					<StyledPageTitleCenter>Congratulations!!! You got {correct.length} out of {deck.questions.length} {pluralize(deck.questions.length, 'question')}</StyledPageTitleCenter>
+					<StyledPageTitleCenter>Average score: {getPercentage(correct.length, deck.questions.length)}</StyledPageTitleCenter>
 
 					<ButtonContainer>
-						<TouchButton category={card.category} onPress={() => navigation.navigate('Home')}>Back to home</TouchButton>
+						<TouchButton category={deck.category} onPress={this.handleRestart}>Restart Quiz</TouchButton>
+						<TouchButton onPress={() => navigation.navigate('Home')}>Back to Deck List</TouchButton>
 					</ButtonContainer>
 				</CenterView>
 			);
-		}
+		};
 
 		return (
 			<View style={{flex: 1}}>
 				<View>
 					<SpaceBetweenRow>
-						<StyledPageTitle>{questionIdx + 1}/{card.questions.length}</StyledPageTitle>
+						<StyledPageTitle>{questionIdx + 1}/{deck.questions.length}</StyledPageTitle>
 					</SpaceBetweenRow>
 					<StyledSecText style={{fontSize: 28}}>{currentCard.question}</StyledSecText>
 				</View>
 
 				{!showAnswer && (
-					<CenterView>
+					<StyledAnimatedShowAnswer style={{opacity: animatedOpacityOut}}>
 						<Text style={{fontSize: 70}}>🤔</Text>
 
 						<ButtonContainer>
-							<TouchButton category={card.category} onPress={() => this.setState({ showAnswer: true })}>Check Answer</TouchButton>
+							<TouchButton category={deck.category} onPress={this.handleShowAnswer}>Check Answer</TouchButton>
 						</ButtonContainer>
-					</CenterView>
+					</StyledAnimatedShowAnswer>
 				)}
 
 				{showAnswer && (
 					<CenterView>
-						<View style={{padding: 20, backgroundColor: '#fff'}}>
+						<Animated.View style={{padding: 20, backgroundColor: '#fff', opacity: animatedOpacityIn}}>
 							<Text style={{fontSize: 22, textAlign: 'center'}}>{currentCard.answer}</Text>
 							<View style={{flexDirection: 'row'}}>
 								<StyledThumbs onPress={() => this.handleAnswer(true)} type="success">
@@ -96,7 +139,7 @@ class Quiz extends Component {
 									<MaterialCommunityIcons name="thumb-down" color="#fff" size={50}/>
 								</StyledThumbs>
 							</View>
-						</View>
+						</Animated.View>
 					</CenterView>
 				)}
 			</View>
@@ -106,17 +149,21 @@ class Quiz extends Component {
 
 const StyledThumbs = styled.TouchableOpacity`
 	background-color: ${props => colors[props.type]}
-	padding: 20px;
 	border-radius: 70px
 	margin: 20px;
+	padding: 20px;
 `;
 
-const mapStateToProps = (cards, currProps) => {
+const StyledPageTitleCenter = StyledPageTitle.extend`
+	text-align: center;
+`
+
+const mapStateToProps = (decks, currProps) => {
 	const { title } = currProps.navigation.state.params;
-	const card = cards[title];
+	const deck = decks[title];
 
 	return {
-		card
+		deck
 	}
 };
 

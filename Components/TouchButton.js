@@ -16,8 +16,8 @@ const TouchableRow = styled.TouchableOpacity`
 
 const StyledButton = styled.Text`
 	color: #fff;
+	flex: 1;
 	font-size: 18;
-	flex: 1
 	text-align: center
 `;
 

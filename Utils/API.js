@@ -1,6 +1,6 @@
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage } from 'react-native';
 
-export const STORAGE_KEY = 'MobileFlashcards:cards';
+export const STORAGE_KEY = 'MobileFlashcards:decks';
 
 export const getDecks = () => {
 	return AsyncStorage.getItem(STORAGE_KEY)

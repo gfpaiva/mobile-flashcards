@@ -15,7 +15,7 @@ class AddCard extends Component {
 		answerError: false,
 	};
 
-	_handleQuestionChange = question => {
+	handleQuestionChange = question => {
 		let newState = {
 			question
 		};
@@ -30,7 +30,7 @@ class AddCard extends Component {
 		this.setState(newState);
 	};
 
-	_handleAnswerChange = answer => {
+	handleAnswerChange = answer => {
 		let newState = {
 			answer
 		};
@@ -45,8 +45,8 @@ class AddCard extends Component {
 		this.setState(newState);
 	};
 
-	_handleSave = () => {
-		const { card, dispatch, toggleModal } = this.props;
+	handleSave = () => {
+		const { deck, dispatch, toggleModal } = this.props;
 		const { question, answer } = this.state;
 
 		if(!question) {
@@ -70,7 +70,7 @@ class AddCard extends Component {
 			answer
 		};
 
-		dispatch(saveCard(newQuestion, card));
+		dispatch(saveCard(newQuestion, deck));
 
 		this.setState({
 			question: '',
@@ -90,15 +90,15 @@ class AddCard extends Component {
 		return (
 			<KeyboardAvoidingView behavior={'padding'} style={{paddingRight: 20, paddingLeft: 20, backgroundColor: '#fff'}}>
 				<StyledTextLabel>Question</StyledTextLabel>
-				<StyledInput value={question} onChangeText={this._handleQuestionChange} placeholder="Type here..." underlineColorAndroid={questionError ? colors.fail : '#dadada'} />
+				<StyledInput value={question} onChangeText={this.handleQuestionChange} placeholder="Type here..." underlineColorAndroid={questionError ? colors.fail : '#dadada'} />
 				{questionError && <ErrorLabel>Question is required</ErrorLabel>}
 
 				<StyledTextLabel>Answer</StyledTextLabel>
-				<StyledInput value={answer} onChangeText={this._handleAnswerChange} placeholder="Type here..." underlineColorAndroid={answerError ? colors.fail : '#dadada'} />
+				<StyledInput value={answer} onChangeText={this.handleAnswerChange} placeholder="Type here..." underlineColorAndroid={answerError ? colors.fail : '#dadada'} />
 				{answerError && <ErrorLabel>Answer is required</ErrorLabel>}
 
 				<ButtonContainer>
-					<TouchButton onPress={this._handleSave}>Save</TouchButton>
+					<TouchButton onPress={this.handleSave}>Save</TouchButton>
 				</ButtonContainer>
 			</KeyboardAvoidingView>
 		);

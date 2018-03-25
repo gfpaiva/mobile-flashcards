@@ -28,20 +28,20 @@ export const StyledViewContainer = styled.View`
 `;
 
 export const StyledRow = StyledViewContainer.extend`
-	flex: 1;
-	flex-direction: row;
 	align-items: center;
+	flex-direction: row;
+	flex: 1;
 `;
 
 export const SpaceBetweenRow = StyledRow.extend`
+	align-content: center;
 	flex-direction: row;
 	justify-content: space-between;
-	align-content: center;
 `;
 
 export const CenterView = StyledViewContainer.extend`
-	flex: 1;
 	align-items: center;
+	flex: 1;
 	justify-content: center;
 `;
 
@@ -63,7 +63,7 @@ export const StyledSecText = ColorTextSec.extend`
 `;
 
 export const StyledInput = styled.TextInput`
-	color: ${colors.secondary}
+	color: ${colors.secondary};
 	font-size: 18;
 	padding: 0 0 10px;
 	width: 100%
@@ -74,28 +74,28 @@ export const ErrorLabel = styled.Text`
 `;
 
 export const StyledTextLabel = ColorText.extend`
-	margin-top: 30px;
+	font-size: 18;
 	margin-bottom: 15px;
-	font-size: 18
+	margin-top: 30px;
 `;
 
 export const StyledPicker = styled.View`
-	border: 1px solid #dadada;
 	background-color: transparent;
+	border: 1px solid #dadada;
 	padding: 10px 0;
-	width: 100%
+	width: 100%;
 `;
 
 export const ButtonContainer = styled.View`
-	position: absolute;
-	left: -20;
-	right: -20;
 	bottom: 0;
+	left: -20;
+	position: absolute;
+	right: -20;
 `;
 
 export const StyledPageTitle = styled.Text`
+	color: #000;
 	font-size: 26;
-	color: #000
 `;
 
 // https://coolors.co/272932-4d7ea8-d87f7f-fffd98-bde4a7

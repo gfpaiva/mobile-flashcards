@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text } from 'react-native';
 import { AppLoading } from 'expo';
-import { getStorageCards } from '../Actions';
+import { getStorageDecks } from '../Actions';
 import { StyledScroll } from './Styled';
 import DeckList from './DeckList';
 import AddButton from './AddButton';
@@ -12,7 +12,7 @@ class Home extends Component {
 		isReady: false
 	};
 
-	_fetchCards = () => this.props.dispatch(getStorageCards());
+	fetchDecks = () => this.props.dispatch(getStorageDecks());
 
 	render() {
 		const { isReady } = this.state;
@@ -20,7 +20,7 @@ class Home extends Component {
 		if (!isReady) {
 			return (
 				<AppLoading
-					startAsync={this._fetchCards}
+					startAsync={this.fetchDecks}
 					onFinish={() => this.setState({ isReady: true })}
 					onError={console.warn}
 				/>
@@ -38,6 +38,4 @@ class Home extends Component {
 	}
 };
 
-const mapStateToProps = (cards) => ({ cards });
-
-export default connect(mapStateToProps)(Home);
+export default connect(null)(Home);

@@ -4,17 +4,21 @@
 		"orientation": "portrait",
 		"name": "Mobile FlashCards",
 		"description": "Quiz App",
-		"slug": "mobileflashcards",
+		"slug": "gfpaivamobileflashcards",
 		"version": "1.0",
+		"icon": "./Assets/img/splash.png",
+		"notification": {
+			"icon": "./Assets/img/splash.png"
+		},
 		"splash": {
 			"image": "./Assets/img/splash.png",
 			"backgroundColor": "#7db6ff"
 		},
 		"ios": {
-			"bundleIdentifier": "org.udacifitness.exp"
+			"bundleIdentifier": "org.gfpaivamobileflashcards.exp"
 		},
 		"android": {
-			"package": "org.udacifitness.exp"
+			"package": "org.gfpaivamobileflashcards.exp"
 		}
 	}
 }

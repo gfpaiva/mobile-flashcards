@@ -13,7 +13,7 @@ class AddDeck extends Component {
 		inputError: false,
 	};
 
-	_handleInputChange = input => {
+	handleInputChange = input => {
 		let newState = {
 			input
 		};
@@ -28,13 +28,13 @@ class AddDeck extends Component {
 		this.setState(newState);
 	};
 
-	_handleSelectChange = category => {
+	handleSelectChange = category => {
 		this.setState({
 			category
 		});
 	};
 
-	_handleSave = () => {
+	handleSave = () => {
 		const { input, category } = this.state;
 
 		if(!input) {
@@ -82,12 +82,12 @@ class AddDeck extends Component {
 				<View style={{flex: 1}}>
 					<StyledPageTitle>Add a new Deck</StyledPageTitle>
 					<StyledTextLabel>Title</StyledTextLabel>
-					<StyledInput value={input} onChangeText={this._handleInputChange} placeholder="Type here..." underlineColorAndroid={inputError ? colors.fail : '#dadada'} />
+					<StyledInput value={input} onChangeText={this.handleInputChange} placeholder="Type here..." underlineColorAndroid={inputError ? colors.fail : '#dadada'} />
 					{inputError && <ErrorLabel>Deck title is required</ErrorLabel>}
 
 					<StyledTextLabel>Category</StyledTextLabel>
 					<StyledPicker>
-						<Picker selectedValue={category} onValueChange={this._handleSelectChange} mode='dropdown'>
+						<Picker selectedValue={category} onValueChange={this.handleSelectChange} mode='dropdown'>
 							<Picker.Item label="Software Development" value="software" />
 							<Picker.Item label="Mathematics" value="math" />
 							<Picker.Item label="Literature" value="literature" />
@@ -96,7 +96,7 @@ class AddDeck extends Component {
 					</StyledPicker>
 
 					<ButtonContainer>
-						<TouchButton onPress={this._handleSave}>Save</TouchButton>
+						<TouchButton onPress={this.handleSave}>Save</TouchButton>
 					</ButtonContainer>
 				</View>
 			</KeyboardAvoidingView>

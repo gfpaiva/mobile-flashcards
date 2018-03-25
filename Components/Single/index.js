@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 import Carousel from 'react-native-snap-carousel';
 import styled from 'styled-components';
-import colors, { StyledViewContainer, getColorCateogry, ButtonContainer, StyledPageTitle, SpaceBetweenRow, StyledSecText } from '../Styled';
+import colors, {
+	getColorCateogry,
+	ButtonContainer,
+	StyledPageTitle,
+	SpaceBetweenRow,
+	StyledSecText
+} from '../Styled';
 import NotFound from './NotFound';
 import AddCard from '../AddCard';
 import TouchButton from '../TouchButton';
 import LinkText from '../LinkText';
-import { pluralize, getCategoryName, sliderWidth, itemWidth, slideHeight } from '../../Utils/Helpers';
+import {
+	pluralize,
+	getCategoryName,
+	sliderWidth,
+	itemWidth,
+	slideHeight
+} from '../../Utils/Helpers';
 
 class Single extends Component {
 	state = {
@@ -24,14 +36,14 @@ class Single extends Component {
 	};
 
 	_renderItem = ( {item, index} ) => {
-		const { category, questions } = this.props.card;
+		const { category, questions, complete } = this.props.deck;
 
 		return (
 			<View>
 				{!item.isAdd && (
 					<SlideCard width={itemWidth} height={slideHeight}>
-						<SecretIcon name="lock" size={50} color={getColorCateogry(category)}/>
-						<SecretQuestion>{item.question}</SecretQuestion>
+						{!complete && <SecretIcon color={getColorCateogry(category)}>{index + 1}</SecretIcon>}
+						<SecretQuestion complete={complete}>{item.question}</SecretQuestion>
 					</SlideCard>
 				)}
 
@@ -48,13 +60,13 @@ class Single extends Component {
 	};
 
 	render() {
-		const { card, navigation } = this.props;
+		const { deck, navigation } = this.props;
 		const { addCardModal } = this.state;
-		const carouselCards = card.questions.concat({isAdd: true});
+		const carouselCards = deck.questions.concat({isAdd: true});
 
 		return (
 			<View style={{flex: 1}}>
-				{(!card.questions || card.questions.length <= 0) && <NotFound openInsertModal={this.toggleModal} />}
+				{(!deck.questions || deck.questions.length <= 0) && <NotFound openInsertModal={this.toggleModal} />}
 
 				<Modal
 					isVisible={addCardModal}
@@ -64,17 +76,17 @@ class Single extends Component {
 					swipeDirection='down'
 					style={{justifyContent: 'center'}}
 				>
-					<AddCard card={card} toggleModal={this.toggleModal} />
+					<AddCard deck={deck} toggleModal={this.toggleModal} />
 				</Modal>
 
-				{(card.questions && card.questions.length > 0) && (
+				{(deck.questions && deck.questions.length > 0) && (
 					<View style={{flex: 1}}>
 						<View style={{marginBottom: 50}}>
 							<SpaceBetweenRow>
-								<StyledPageTitle>{card.title}</StyledPageTitle>
-								<StyledSecText>{card.questions.length} {pluralize(card.questions, 'card')}</StyledSecText>
+								<StyledPageTitle>{deck.title}</StyledPageTitle>
+								<StyledSecText>{deck.questions.length} {pluralize(deck.questions, 'card')}</StyledSecText>
 							</SpaceBetweenRow>
-							<StyledSecText>{getCategoryName(card.category)}</StyledSecText>
+							<StyledSecText>{getCategoryName(deck.category)}</StyledSecText>
 						</View>
 
 						<Carousel
@@ -89,7 +101,7 @@ class Single extends Component {
 						/>
 
 						<ButtonContainer>
-							<TouchButton category={card.category} onPress={() => navigation.navigate('Quiz', { title: card.title })}>Start Quiz</TouchButton>
+							<TouchButton category={deck.category} onPress={() => navigation.navigate('Quiz', { title: deck.title })}>Start Quiz</TouchButton>
 						</ButtonContainer>
 					</View>
 				)}
@@ -100,23 +112,23 @@ class Single extends Component {
 };
 
 const SlideCard = styled.View`
-	background-color: #fff;
-	width: ${props => props.width};
-	height: ${props => props.height};
-	borderRadius: 10;
 	alignItems: center;
-	justifyContent: center;
-	shadow-offset: 0 0;
-	shadow-color: #000;
-	shadow-opacity: 0.5;
+	background-color: #fff;
+	borderRadius: 10;
 	elevation: 2;
-	shadowRadius: 10;
-	position: relative;
+	height: ${props => props.height};
+	justifyContent: center;
 	padding: 20px;
+	position: relative;
+	shadow-color: #000;
+	shadow-offset: 0 0;
+	shadow-opacity: 0.5;
+	shadowRadius: 10;
+	width: ${props => props.width};
 `;
 
 const SecretQuestion = styled.Text`
-	color: rgba(0, 0, 0, 0.055);
+	color: rgba(0, 0, 0, ${props => props.complete ? '1' : '0.055'});
 	fontSize: 22;
 	text-align: center;
 `;
@@ -126,24 +138,30 @@ const CarouselAddCard = styled.Text`
 	fontSize: 22;
 `;
 
-const SecretIcon = styled(MaterialCommunityIcons)`
-	position: absolute;
-	top: 50%;
+const SecretIcon = styled.Text`
+	align-items: center
+	border-color: ${props => props.color ? props.color : colors.primary};
+	border-radius: 50;
+	border-width: 1;
+	color: ${props => props.color ? props.color : colors.primary};
+	font-size: 50px;
+	height: 68px;
+	justify-content: center;
 	left: 50%;
 	margin: -18px 0 0 -18px;
-	border-width: 1;
-	border-radius: 50;
-	border-color: ${props => props.color ? props.color : colors.primary};
-	padding: 12px;
 	opacity: 1;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	width: 68px;
 `;
 
-const mapStateToProps = (cards, currProps) => {
+const mapStateToProps = (decks, currProps) => {
 	const { title } = currProps.navigation.state.params;
-	const card = cards[title];
+	const deck = decks[title];
 
 	return {
-		card
+		deck
 	}
 };
 

@@ -6,32 +6,38 @@ import styled from "styled-components";
 import { withNavigation } from 'react-navigation';
 import { values as _values } from 'lodash';
 import { pluralize } from '../Utils/Helpers';
-import colors, { ColorText, ColorTextSec, StyledRow, StyledViewContainer, getColorCateogry } from './Styled';
+import colors, {
+	ColorText,
+	ColorTextSec,
+	StyledRow,
+	StyledViewContainer,
+	getColorCateogry
+} from './Styled';
 
-const SlingeList = ( { cards, title, navigation } ) => (
+const SlingeList = ( { decks, title, navigation } ) => (
 	<View>
-		{cards && cards.length > 0 && (
+		{decks && decks.length > 0 && (
 			<StyledViewContainer style={{marginTop: 20}}>
 				<ColorTextSec>{title}</ColorTextSec>
 			</StyledViewContainer>
 		)}
 
-		{cards && cards.length > 0 && cards.map((card, index) => (
-			<StyledTouch key={index} onPress={() => navigation.navigate('Single', { title: card.title })}>
-				<StyledIcon name="cards-outline" size={32} color="#fff" bgColor={getColorCateogry(card.category)} />
+		{decks && decks.length > 0 && decks.map((deck, index) => (
+			<StyledTouch key={index} onPress={() => navigation.navigate('Single', { title: deck.title })}>
+				<StyledIcon name="cards-outline" size={32} color="#fff" bgColor={getColorCateogry(deck.category)} />
 
 				<StyledDeckRow>
-					<CardTitle>{card.title}</CardTitle>
-					<ColorTextSec> {(card.questions && card.questions.length > 0) ? `${card.questions.length} ${pluralize(card.questions, 'card')}` : '0 cards 😐' } </ColorTextSec>
+					<CardTitle>{deck.title}</CardTitle>
+					<ColorTextSec> {(deck.questions && deck.questions.length > 0) ? `${deck.questions.length} ${pluralize(deck.questions, 'card')}` : '0 cards 😐' } </ColorTextSec>
 				</StyledDeckRow>
 			</StyledTouch>
 		))}
 	</View>
 );
 
-const DeckList = ( { cards, navigation, currentCards, archivedCards } ) => {
+const DeckList = ( { decks, navigation, currentDecks, archivedDecks } ) => {
 
-	if(!cards || cards.length <= 0) {
+	if(!decks || decks.length <= 0) {
 		return (
 			<View>
 				<NotFoundText>You don't have any deck yet 😐.</NotFoundText>
@@ -42,18 +48,18 @@ const DeckList = ( { cards, navigation, currentCards, archivedCards } ) => {
 
 	return (
 		<View>
-			<SlingeList cards={currentCards} title="CURRENT" navigation={navigation}/>
-			<SlingeList cards={archivedCards} title="COMPLETED CARDS" navigation={navigation}/>
+			<SlingeList decks={currentDecks} title="CURRENT" navigation={navigation}/>
+			<SlingeList decks={archivedDecks} title="COMPLETED DECKS" navigation={navigation}/>
 		</View>
 	);
 };
 
 const StyledTouch = styled.TouchableOpacity`
 	background-color: #ffffff;
-	flex: 1;
-	flex-direction: row;
-	border-bottom-width: 1px;
 	border-bottom-color: #dadada;
+	border-bottom-width: 1px;
+	flex-direction: row;
+	flex: 1;
 	padding: 20px;
 `;
 
@@ -65,9 +71,9 @@ const StyledDeckRow = StyledRow.extend`
 const StyledIcon = styled(MaterialCommunityIcons)`
 	background-color: ${props => props.bgColor ? props.bgColor : colors.primary};
 	border-radius: 64;
+	height: 64;
 	padding: 15px;
 	width: 64;
-	height: 64;
 `;
 
 const CardTitle = ColorText.extend`
@@ -76,19 +82,19 @@ const CardTitle = ColorText.extend`
 
 const NotFoundText = ColorTextSec.extend`
 	font-size: 22;
-	text-align: center;
 	margin-top: 100;
+	text-align: center;
 `
 
-const mapStateToProps = cards => {
-	const cardsInArray = _values(cards);
-	const currentCards = cardsInArray.filter(card => !card.complete);
-	const archivedCards = cardsInArray.filter(card => card.complete);
+const mapStateToProps = decks => {
+	const decksInArray = _values(decks);
+	const currentDecks = decksInArray.filter(deck => !deck.complete);
+	const archivedDecks = decksInArray.filter(deck => deck.complete);
 
 	return {
-		cards: cardsInArray,
-		currentCards,
-		archivedCards
+		decks: decksInArray,
+		currentDecks,
+		archivedDecks
 	}
 };
 

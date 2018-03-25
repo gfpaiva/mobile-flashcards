@@ -14,18 +14,18 @@ const AddButton = ( { ...props } ) => (
 );
 
 const Circle = styled.TouchableOpacity`
-	background-color: ${colors.primaryD};
-	width: ${buttonSize};
-	height: ${buttonSize};
-	border-radius: ${buttonSize};
 	align-items: center;
+	background-color: ${colors.primaryD};
+	border-radius: ${buttonSize};
+	height: ${buttonSize};
 	justify-content: center;
+	width: ${buttonSize};
 `;
 
 const ButtonContainer = styled.View`
+	bottom: 30;
 	position: absolute;
 	right: 30;
-	bottom: 30;
 `;
 
 export default AddButton;
