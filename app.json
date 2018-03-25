@@ -6,9 +6,9 @@
 		"description": "Quiz App",
 		"slug": "gfpaivamobileflashcards",
 		"version": "1.0",
-		"icon": "./Assets/img/splash.png",
+		"icon": "./Assets/img/icon.png",
 		"notification": {
-			"icon": "./Assets/img/splash.png"
+			"icon": "./Assets/img/icon.png"
 		},
 		"splash": {
 			"image": "./Assets/img/splash.png",
